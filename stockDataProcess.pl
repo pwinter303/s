@@ -9,7 +9,7 @@ use Switch;
 #### 2015-09-12... Written. Purpose: Takes output from stockDataDownload.pl and processes it.. Creating a single output file for each type of file
 ####                            for example... the 5,000 YahooIndustry input files are written to a single file with all 5,000 tickers
 
-## The higher the number the more is output... WIP
+## The higher the number the more is output... WIP...
 my $DEBUG = 1;
 
 require "myFunctions.pl";
@@ -47,7 +47,7 @@ my $pathOutput = $configHashRef->{'stocks.consolidateFilePath'};
 #       the results will be different
 
 #######TEST AREA
-my $dataName = "YahooKeyStats";
+my $dataName = "YahooAnalyst";
 mainProcess($pathToDataFiles, $pathOutput, $tickerArrRef, $dataName);
 die;
 
@@ -794,14 +794,14 @@ sub getFieldsWeWantFromTables{
       # getting industry code via RegEx
 
     ### Yahoo Analysts
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Mean Recommendation \(last week\)'} = [('YA Mean Recomm last week', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Mean Recommendation \(this week\)'} = [('YA Mean Recomm this week', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Change'} = [('YA Chg in Rating', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Mean Target'} = [('YA Mean Tgt', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Median Target'} = [('YA Median Tgt', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'High Target'} = [('YA High Tgt', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Low Target'} = [('YA Low Tgt', '', 0)];
-    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'No. of Brokers'} = [('YA Nbr of Brokers', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Mean Recommendation \(last week\)'} = [('YA Recommendation last week', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Mean Recommendation \(this week\)'} = [('YA Recommendation curr week', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Change'} = [('YA Recommendation Chg from last week', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Mean Target'} = [('YA Price Tgt (Mean)', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Median Target'} = [('YA Price Tgt (Median)', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'High Target'} = [('YA Price Tgt (High)', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'Low Target'} = [('YA Price Tgt (Low)', '', 0)];
+    $fieldsWeWantFromTables{"YahooAnalyst"}{"ANY"}{'No. of Brokers'} = [('YA Price Tgt (Nbr Brokers)', '', 0)];
 
 
     ### Yahoo Keys Stats
@@ -886,25 +886,25 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-Revenue Est-Sales Growth'} = [('YE Revenue Est:Sales Growth:Next Qtr','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-Revenue Est-Sales Growth'} = [('YE Revenue Est:Sales Growth:Next Yr','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-Revenue Est-Sales Growth'} = [('YE Revenue Est:Sales Growth:Curr Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Current Est:Curr Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Current Est:Next Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Current Est:Next Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Current Est:Curr Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:7 Days Ago:Curr Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:7 Days Ago:Next Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:7 Days Ago:Next Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:7 Days Ago:Curr Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:30 Days Ago:Curr Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:30 Days Ago:Next Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:30 Days Ago:Next Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:30 Days Ago:Curr Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:60 Days Ago:Curr Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:60 Days Ago:Next Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:60 Days Ago:Next Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:60 Days Ago:Curr Yr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:90 Days Ago:Curr Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:90 Days Ago:Next Qtr','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:90 Days Ago:Next Yr','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Curr Qtr:Current Est','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Next Qtr:Current Est','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Next Yr:Current Est','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Curr Yr:Current Est','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Curr Qtr:7 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Next Qtr:7 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Next Yr:7 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Curr Yr:7 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Curr Qtr:30 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Next Qtr:30 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Next Yr:30 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Curr Yr:30 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:Curr Qtr:60 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:Next Qtr:60 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:Next Yr:60 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-60 Days Ago'} = [('YE EPS Trends:Curr Yr:60 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Curr Qtr:90 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Next Qtr:90 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Next Yr:90 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:90 Days Ago:Curr Yr','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Revisions-Up Last 7 Days'} = [('YE EPS Revisions:Curr Qtr:Up Last 7 Days','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Revisions-Up Last 7 Days'} = [('YE EPS Revisions:Next Qtr:Up Last 7 Days','',0)];
