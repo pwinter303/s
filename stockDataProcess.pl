@@ -886,10 +886,11 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Next Qtr:Current Est','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Next Yr:Current Est','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-Current Estimate'} = [('YE EPS Trends:Curr Yr:Current Est','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Curr Qtr:7 Days Ago','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Next Qtr:7 Days Ago','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Next Yr:7 Days Ago','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Curr Yr:7 Days Ago','',0)];
+    ## changed 7 to 07 in final name to help with sorting
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Curr Qtr:07 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Next Qtr:07 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Next Yr:07 Days Ago','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-7 Days Ago'} = [('YE EPS Trends:Curr Yr:07 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Curr Qtr:30 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Next Qtr:30 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-30 Days Ago'} = [('YE EPS Trends:Next Yr:30 Days Ago','',0)];
@@ -901,7 +902,7 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Curr Qtr:90 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Next Qtr:90 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Next Yr:90 Days Ago','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:90 Days Ago:Curr Yr','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Trends-90 Days Ago'} = [('YE EPS Trends:Curr Yr:90 Days Ago','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Qtr-EPS Revisions-Up Last 7 Days'} = [('YE EPS Revisions:Curr Qtr:Up Last 7 Days','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Revisions-Up Last 7 Days'} = [('YE EPS Revisions:Next Qtr:Up Last 7 Days','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Revisions-Up Last 7 Days'} = [('YE EPS Revisions:Next Yr:Up Last 7 Days','',0)];
@@ -918,7 +919,7 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Qtr-EPS Revisions-Down Last 90 Days'} = [('YE EPS Revisions:Next Qtr:Down Last 90 Days','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Next Yr-EPS Revisions-Down Last 90 Days'} = [('YE EPS Revisions:Next Yr:Down Last 90 Days','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Curr Yr-EPS Revisions-Down Last 90 Days'} = [('YE EPS Revisions:Curr Yr:Down Last 90 Days','',0)];
-    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-Current Qtr.'} = [('YE Growth Est:Current Qtr.','',0)];
+    $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-Current Qtr.'} = [('YE Growth Est:Curr Qtr.','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-Next Qtr.'} = [('YE Growth Est:Next Qtr.','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-This Year'} = [('YE Growth Est:This Year','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-Next Year'} = [('YE Growth Est:Next Year','',0)];
