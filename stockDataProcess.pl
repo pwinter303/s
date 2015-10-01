@@ -14,7 +14,7 @@ my $DEBUG = 0;
 
 require "myFunctions.pl";
 
-### Standard Block of Code used in stock processing scripts......TEST
+### Standard Block of Code used in stock processing scripts......
 my $configHashRef = getConfig('stockData.config');
 my $pathToSymbolFile = $configHashRef->{'stocks.symbolPath'};
 my $pathToDataFiles = $configHashRef->{'stocks.dataPath'};
