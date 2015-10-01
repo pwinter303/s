@@ -10,7 +10,7 @@ use Switch;
 ####                            for example... the 5,000 YahooIndustry input files are written to a single file with all 5,000 tickers
 
 ## The higher the number the more is output... WIP...
-my $DEBUG = 1;
+my $DEBUG = 0;
 
 require "myFunctions.pl";
 
@@ -47,10 +47,6 @@ my $pathOutput = $configHashRef->{'stocks.consolidateFilePath'};
 #       the results will be different
 
 #######TEST AREA
-my $dataName = "YahooAnalyst";
-mainProcess($pathToDataFiles, $pathOutput, $tickerArrRef, $dataName);
-die;
-
 
 
 
