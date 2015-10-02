@@ -10,7 +10,7 @@ use Switch;
 ####                            for example... the 5,000 YahooIndustry input files are written to a single file with all 5,000 tickers
 
 ## The higher the number the more is output... WIP...
-my $DEBUG = 0;
+my $DEBUG = 1;
 
 require "myFunctions.pl";
 
@@ -47,7 +47,9 @@ my $pathOutput = $configHashRef->{'stocks.consolidateFilePath'};
 #       the results will be different
 
 #######TEST AREA
-
+my $dataName = "MarketWatchQtrlyIncStmt";
+mainProcess($pathToDataFiles, $pathOutput, $tickerArrRef, $dataName);
+die;
 
 
 
@@ -776,8 +778,8 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Curr Yr-Earnings Est-Low Estimate'} = [('ZE Curr Yr:Earnings Est:Low Est', '', 0)];
     $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Next Yr-Earnings Est-Low Estimate'} = [('ZE Next Yr:Earnings Est:Low Est', '', 0)];
 
-    $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Curr Qtr-Earnings Est-Most Recent Consensus'} = [('ZE Earnings Est:Most Recent Consensus:Curr Qtr Est', '', 0)];
-    $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Next Qtr-Earnings Est-Most Recent Consensus'} = [('ZE Earnings Est:Most Recent Consensus:Next Qtr Est', '', 0)];
+    $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Curr Qtr-Earnings Est-Most Recent Consensus'} = [('ZE Curr Qtr:Earnings Est:Most Recent Consensus Est', '', 0)];
+    $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Next Qtr-Earnings Est-Most Recent Consensus'} = [('ZE Next Qtr:Earnings Est:Most Recent Consensus Est', '', 0)];
     $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Curr Yr-Earnings Est-Most Recent Consensus'} = [('ZE Curr Yr:Earnings Est:Most Recent Consensus Est', '', 0)];
     $fieldsWeWantFromTables{"ZacksEstimates"}{"ANY"}{'Next Yr-Earnings Est-Most Recent Consensus'} = [('ZE Next Yr:Earnings Est:Most Recent Consensus Est', '', 0)];
 
@@ -928,25 +930,27 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-Price/Earnings \(avg. for comparison categories\)'} = [('YE Growth Est:Price/Earnings (avg. for comparison categories)','',0)];
     $fieldsWeWantFromTables{'YahooEstimates'}{'ANY'}{'Growth Est-PEG Ratio \(avg. for comparison categories\)'} = [('YE Growth Est:PEG Ratio (avg. for comparison categories)','',0)];
 
-    ### MarketWatch: Quarterly: Balance Sheet
+### MarketWatch: BALANCE SHEET  (Quarterly and Yearly)
+
+    # Retained Earnings
     $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{'Last Qtr-Retained Earnings'}   = [('MW Retained Earnings:Last Qtr-0', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{'Last Qtr-1-Retained Earnings'} = [('MW Retained Earnings:Last Qtr-1', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{'Last Qtr-2-Retained Earnings'} = [('MW Retained Earnings:Last Qtr-2', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{'Last Qtr-3-Retained Earnings'} = [('MW Retained Earnings:Last Qtr-3', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{'Last Qtr-4-Retained Earnings'} = [('MW Retained Earnings:Last Qtr-4', '', 1)];
 
-    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-Total Shareholders' Equity"}   = [('MW Total Shareholders Equity:Last Qtr-0', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-1-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-1', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-2-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-2', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-3-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-3', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-4-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-4', '', 1, 1)];
-
-    ### MarketWatch: Yearly: Balance Sheet
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{'Last Yr-Retained Earnings'}   = [('MW Retained Earnings:Last Yr-0', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{'Last Yr-1-Retained Earnings'} = [('MW Retained Earnings:Last Yr-1', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{'Last Yr-2-Retained Earnings'} = [('MW Retained Earnings:Last Yr-2', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{'Last Yr-3-Retained Earnings'} = [('MW Retained Earnings:Last Yr-3', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{'Last Yr-4-Retained Earnings'} = [('MW Retained Earnings:Last Yr-4', '', 1)];
+
+    # Shareholder Equity
+    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-Total Shareholders' Equity"}   = [('MW Total Shareholders Equity:Last Qtr-0', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-1-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-1', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-2-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-2', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-3-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-3', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyBalSheet"}{"ANY"}{"Last Qtr-4-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Qtr-4', '', 1, 1)];
 
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{"Last Yr-Total Shareholders' Equity"}   = [('MW Total Shareholders Equity:Last Yr-0', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{"Last Yr-1-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Yr-1', '', 1, 1)];
@@ -955,13 +959,23 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{"MarketWatchYrlyBalSheet"}{"ANY"}{"Last Yr-4-Total Shareholders' Equity"} = [('MW Total Shareholders Equity:Last Yr-4', '', 1, 1)];
 
 
-    ### MarketWatch: Quarterly: Income Statement
+### MarketWatch: INCOME STATEMENT  (Quarterly and Yearly)
+
+    #Shares Outstanding
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Basic Shares Outstanding'}   = [('MW Basic Shares Outstanding:Last Qtr-0', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Qtr-1', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Qtr-2', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Qtr-3', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Qtr-4', '', 1)];
 
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Basic Shares Outstanding'}   = [('MW Basic Shares Outstanding:Last Yr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-4', '', 1)];
+
+
+    #Gross Income
     ### NOTE: Pass extra paramater = 1.. which forces a direct match... because there are several fields with Gross Income embedded
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Gross Income'}   = [('MW Gross Income:Last Qtr-0', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-Gross Income'} = [('MW Gross Income:Last Qtr-1', '', 1, 1)];
@@ -969,12 +983,6 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-Gross Income'} = [('MW Gross Income:Last Qtr-3', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-Gross Income'} = [('MW Gross Income:Last Qtr-4', '', 1, 1)];
 
-    ### MarketWatch: Yearly: Income Statement
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Basic Shares Outstanding'}   = [('MW Basic Shares Outstanding:Last Yr-0', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-1', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-2', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-3', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Basic Shares Outstanding'} = [('MW Basic Shares Outstanding:Last Yr-4', '', 1)];
     ### NOTE: Pass extra paramater = 1.. which forces a direct match... because there are several fields with Gross Income embedded
     $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Gross Income'}   = [('MW Gross Income:Last Yr-0', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Gross Income'} = [('MW Gross Income:Last Yr-1', '', 1, 1)];
@@ -982,38 +990,54 @@ sub getFieldsWeWantFromTables{
     $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Gross Income'} = [('MW Gross Income:Last Yr-3', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Gross Income'} = [('MW Gross Income:Last Yr-4', '', 1, 1)];
 
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Net Income Available to Common'}   = [('MW Net Inc Avail to Common:Last Yr-0', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-1', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-2', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-3', '', 1)];
-    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-4', '', 1)];
+    #Sales/Revenue
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Sales\/Revenue'}   = [('MW Sales/Revenue:Last Qtr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-Sales\/Revenue'} = [('MW Sales/Revenue:Last Qtr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-Sales\/Revenue'} = [('MW Sales/Revenue:Last Qtr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-Sales\/Revenue'} = [('MW Sales/Revenue:Last Qtr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-Sales\/Revenue'} = [('MW Sales/Revenue:Last Qtr-4', '', 1)];
 
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Sales\/Revenue'}   = [('MW Sales/Revenue:Last Yr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Sales\/Revenue'} = [('MW Sales/Revenue:Last Yr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Sales\/Revenue'} = [('MW Sales/Revenue:Last Yr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Sales\/Revenue'} = [('MW Sales/Revenue:Last Yr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Sales\/Revenue'} = [('MW Sales/Revenue:Last Yr-4', '', 1)];
+
+    #Net Income
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Net Income Available to Common'}   = [('MW Net Inc Avail to Common:Last Qtr-0', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Qtr-1', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Qtr-2', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Qtr-3', '', 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Qtr-4', '', 1)];
 
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Net Income Available to Common'}   = [('MW Net Inc Avail to Common:Last Yr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Net Income Available to Common'} = [('MW Net Inc Avail to Common:Last Yr-4', '', 1)];
 
-    ### MarketWatch: Quarterly: Cash Flow
+
+### MarketWatch: CASH FLOW   (Quarterly and Yearly)
+
+    #Free Cash Flow
     $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-Free Cash Flow'}   = [('MW Free Cash Flow:Last Qtr-0', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-1-Free Cash Flow'} = [('MW Free Cash Flow:Last Qtr-1', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-2-Free Cash Flow'} = [('MW Free Cash Flow:Last Qtr-2', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-3-Free Cash Flow'} = [('MW Free Cash Flow:Last Qtr-3', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-4-Free Cash Flow'} = [('MW Free Cash Flow:Last Qtr-4', '', 1, 1)];
 
-    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-Net Operating Cash Flow'}   = [('MW Net Operating Cash Flow:Last Qtr-0', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-1-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-1', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-2-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-2', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-3-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-3', '', 1, 1)];
-    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-4-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-4', '', 1, 1)];
-
-    ### MarketWatch: Yearly: Cash Flow
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-Free Cash Flow'}   = [('MW Free Cash Flow:Last Yr-0', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-1-Free Cash Flow'} = [('MW Free Cash Flow:Last Yr-1', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-2-Free Cash Flow'} = [('MW Free Cash Flow:Last Yr-2', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-3-Free Cash Flow'} = [('MW Free Cash Flow:Last Yr-3', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-4-Free Cash Flow'} = [('MW Free Cash Flow:Last Yr-4', '', 1, 1)];
+
+    #Net Operating Cash Flow
+    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-Net Operating Cash Flow'}   = [('MW Net Operating Cash Flow:Last Qtr-0', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-1-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-1', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-2-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-2', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-3-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-3', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyCashFlow"}{"ANY"}{'Last Qtr-4-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Qtr-4', '', 1, 1)];
 
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-Net Operating Cash Flow'}   = [('MW Net Operating Cash Flow:Last Yr-0', '', 1, 1)];
     $fieldsWeWantFromTables{"MarketWatchYrlyCashFlow"}{"ANY"}{'Last Yr-1-Net Operating Cash Flow'} = [('MW Net Operating Cash Flow:Last Yr-1', '', 1, 1)];
