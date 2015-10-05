@@ -6,10 +6,11 @@ use HTML::TableExtract;
 use threads;
 use Switch;
 
-#### 2015-09-12... Written. Purpose: Takes output from stockDataDownload.pl and processes it.. Creating a single output file for each type of file
-####                            for example... the 5,000 YahooIndustry input files are written to a single file with all 5,000 tickers
+#### 2015-09-12... Written. Purpose: Takes output from stockDataDownload.pl and processes it..
+####                Creating a single output file for each type of file with info on 5,000+ stocks
+####                For example... the 5,000 YahooIndustry input files are written to a single file with all 5,000 tickers
 
-## The higher the number the more is output... WIP...
+## The higher the number the more is output...
 my $DEBUG = 0;
 my $OUTPUTTEMPFILE = 0;
 
