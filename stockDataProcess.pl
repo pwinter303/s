@@ -10,7 +10,8 @@ use Switch;
 ####                            for example... the 5,000 YahooIndustry input files are written to a single file with all 5,000 tickers
 
 ## The higher the number the more is output... WIP...
-my $DEBUG = 1;
+my $DEBUG = 0;
+my $OUTPUTTEMPFILE = 0;
 
 require "myFunctions.pl";
 
@@ -29,7 +30,7 @@ if ($total) {
 #getTickers is part of myFunctions.. gets all tickers from the file its passed
 my $fullFilePathAndName = $pathToSymbolFile . $symbolFileName;
 my $tickerArrRef = getTickers($fullFilePathAndName);
-my $arrayOfArrayRef = splitArray(20,$tickerArrRef);
+my $arrayOfArrayRef = splitArray(25,$tickerArrRef);
 
 ## Where to Write OutputFiles
 my $pathOutput = $configHashRef->{'stocks.consolidateFilePath'};
@@ -46,12 +47,10 @@ my $pathOutput = $configHashRef->{'stocks.consolidateFilePath'};
 #       then go through and get the HTML to match.. if you copy it within browser or before cleans
 #       the results will be different
 
-#######TEST AREA
-my $dataName = "MarketWatchQtrlyIncStmt";
-mainProcess($pathToDataFiles, $pathOutput, $tickerArrRef, $dataName);
-die;
-
-
+#TEST AREA
+# my $dataName = "ZacksIndustry";
+# mainProcess($pathToDataFiles, $pathOutput, $tickerArrRef, $dataName);
+# die;
 
 ### Market Watch: Yearly: Balance Sheet
 my $dataName = "MarketWatchYrlyBalSheet";
@@ -140,7 +139,14 @@ sub mainProcess{
     }
 
     if ($DEBUG > 0){
-      print "RESULTS ARE IN... " . $dataName . "\n" . Dumper(%results);
+      print "RESULTS ARE IN... \n";
+      ## hash is keyed by Ticker. Then DataName. Then Field
+      for my $ticker ( sort keys %results ) {
+                  print "Ticker:$ticker \n   dataName:$dataName:\n";
+                  for my $fieldKey (sort keys $results{$ticker}{$dataName}){
+                    print "\t\t$fieldKey->$results{$ticker}{$dataName}{$fieldKey}\n";
+                  }
+      }
     }
     ### after the thread ends all the refences are empty... FixMe: is there a better way to do this?
     my $outFile = $pathOutput . $hashConfigRef->{"outputFileName"};
@@ -199,12 +205,14 @@ sub processTicker{
 
     ###uncomment to generate a temp file used for HTML matching in extractSpecial
     ### NOTE: may want to wrap if around this and check $dataName and only output for certain file types
-    # my $fileName = "/Users/pwinter303/Documents/Scripts/ContentAfterClean.html";
-    # # my $fileName = "C:/Users/paul-winter/Desktop/Junk-DeleteMe/Stocks/JunkZackEstPostClean.html";
-    # open my $tmpFG, ">", $fileName;
-    # print $tmpFG $content;
-    # close $tmpFG;
-    #die;
+    if ($OUTPUTTEMPFILE){
+          my $fileName = "/Users/pwinter303/Documents/Scripts/ContentAfterClean2.html";
+          # # my $fileName = "C:/Users/paul-winter/Desktop/Junk-DeleteMe/Stocks/JunkZackEstPostClean.html";
+          print "\n\nOUTPUTTING TEMP FILE:$fileName\n\n";
+          open my $tmpFG, ">", $fileName;
+          print $tmpFG $content;
+          close $tmpFG;
+    }
 
     extractMain($ticker, $content, $dataName, $dataHashRef);
 
@@ -567,11 +575,14 @@ sub extractRegEx{
 
     foreach my $fieldName (keys %{$regExHashRef}){
         my $regExSearchString = $regExHashRef->{$fieldName};
-        #print "fieldName:$fieldName regExSearchString:$regExSearchString\n";
+        if ($DEBUG > 4){print "fieldName:$fieldName regExSearchString:$regExSearchString\n";}
         my $result = "";
         if ($content =~ m/$regExSearchString/) {
-            #print "extractRegEx Found A Match! fieldName:$fieldName value:$1\n";
+            if ($DEBUG > 4){
+                print "extractRegEx Found A Match! fieldName:$fieldName value:$1<--\n";
+            }
             $result=$1;
+            #if ('ZacksIndustry' eq $dataName){$result=$2;}
             #FixMe: This is new so not sure if it will cause problems.. It's needed to strip commas from co description
             $result =~ s/,//g;
         }
@@ -960,6 +971,60 @@ sub getFieldsWeWantFromTables{
 
 
 ### MarketWatch: INCOME STATEMENT  (Quarterly and Yearly)
+    #EBITDA
+    ### NOTE: Pass extra paramater = 1.. which forces a direct match... because there are several fields with the same name
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-EBITDA'}   = [('MW EBITDA:Last Qtr-0', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-EBITDA'} = [('MW EBITDA:Last Qtr-1', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-EBITDA'} = [('MW EBITDA:Last Qtr-2', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-EBITDA'} = [('MW EBITDA:Last Qtr-3', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-EBITDA'} = [('MW EBITDA:Last Qtr-4', '', 1, 1)];
+
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-EBITDA'}   = [('MW EBITDA:Last Yr-0', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-EBITDA'} = [('MW EBITDA:Last Yr-1', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-EBITDA'} = [('MW EBITDA:Last Yr-2', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-EBITDA'} = [('MW EBITDA:Last Yr-3', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-EBITDA'} = [('MW EBITDA:Last Yr-4', '', 1, 1)];
+
+    #Interest Expense
+    ### NOTE: Pass extra paramater = 1.. which forces a direct match... because there are several fields with the same name
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Interest Expense'}   = [('MW Interest Expense:Last Qtr-0', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-Interest Expense'} = [('MW Interest Expense:Last Qtr-1', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-Interest Expense'} = [('MW Interest Expense:Last Qtr-2', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-Interest Expense'} = [('MW Interest Expense:Last Qtr-3', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-Interest Expense'} = [('MW Interest Expense:Last Qtr-4', '', 1, 1)];
+
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Interest Expense'}   = [('MW Interest Expense:Last Yr-0', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Interest Expense'} = [('MW Interest Expense:Last Yr-1', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Interest Expense'} = [('MW Interest Expense:Last Yr-2', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Interest Expense'} = [('MW Interest Expense:Last Yr-3', '', 1, 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Interest Expense'} = [('MW Interest Expense:Last Yr-4', '', 1, 1)];
+
+
+    #Depreciation & Amortization Expense
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Depreciation & Amortization Expense'}   = [('MW Depreciation & Amortization Expense:Last Qtr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Qtr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Qtr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Qtr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Qtr-4', '', 1)];
+
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-Depreciation & Amortization Expense'}   = [('MW Depreciation & Amortization Expense:Last Yr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Yr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Yr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Yr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-Depreciation & Amortization Expense'} = [('MW Depreciation & Amortization Expense:Last Yr-4', '', 1)];
+
+    #SG&A Expense
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-SG&A Expense'}   = [('MW SG&A Expense:Last Qtr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-1-SG&A Expense'} = [('MW SG&A Expense:Last Qtr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-2-SG&A Expense'} = [('MW SG&A Expense:Last Qtr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-3-SG&A Expense'} = [('MW SG&A Expense:Last Qtr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-4-SG&A Expense'} = [('MW SG&A Expense:Last Qtr-4', '', 1)];
+
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-SG&A Expense'}   = [('MW SG&A Expense:Last Yr-0', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-1-SG&A Expense'} = [('MW SG&A Expense:Last Yr-1', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-2-SG&A Expense'} = [('MW SG&A Expense:Last Yr-2', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-3-SG&A Expense'} = [('MW SG&A Expense:Last Yr-3', '', 1)];
+    $fieldsWeWantFromTables{"MarketWatchYrlyIncStmt"}{"ANY"}{'Last Yr-4-SG&A Expense'} = [('MW SG&A Expense:Last Yr-4', '', 1)];
 
     #Shares Outstanding
     $fieldsWeWantFromTables{"MarketWatchQtrlyIncStmt"}{"ANY"}{'Last Qtr-Basic Shares Outstanding'}   = [('MW Basic Shares Outstanding:Last Qtr-0', '', 1)];
@@ -1055,8 +1120,13 @@ sub getFieldsWeWantViaRegEx{
     my %regExSearches;
 
     ### ZacksIndustry
-    $regExSearches{"ZacksIndustry"}{"ZI CoName"} = qr/topbox_headline">(.+?):/;
-    $regExSearches{"ZacksIndustry"}{"ZI CoDescription"} = qr/Company Description.+?<p>(.+?)<\/p>/;
+
+    ### ?: in the regex makes the group non-capturing
+    $regExSearches{"ZacksIndustry"}{"ZI CoName"} = qr/(?:topbox_headline">|header>\s+<h1>)(.+?):/;
+    ###print "\n\n\nSEARCH:$regExSearches{'ZacksIndustry'}{'ZI CoName'}\n";
+    # $regExSearches{"ZacksIndustry"}{"ZI CoName"} = qr/header>\s+<h1>(.+?):/;   <span title="(.+?):
+    ### OLD WAY:$regExSearches{"ZacksIndustry"}{"ZI CoDescription"} = qr/Company Description.+?<p>(.+?)<\/p>/;
+    $regExSearches{"ZacksIndustry"}{"ZI CoDescription"} = qr/Company (?:Description|Summary).+?<p>(.+?)<\/p>/;
 
     ### ZacksEstimate
     $regExSearches{"ZacksEstimates"}{"ZE CompName"} = qr/<title>\w+:  (.+?) -/;
@@ -1072,7 +1142,8 @@ sub getFieldsWeWantViaRegEx{
 
     ### Yahoo Industry
     $regExSearches{"YahooIndustry"}{"YI Industry"} = qr/Industry: (.+?)\|/;
-    $regExSearches{"YahooIndustry"}{"YI CoName"} = qr/href="\/q\/pr\?s=\w+">(.+?)<\/a>/;
+    ### OLD WAY: $regExSearches{"YahooIndustry"}{"YI CoName"} = qr/href="\/q\/pr\?s=\w+">(.+?)<\/a>/;
+    $regExSearches{"YahooIndustry"}{"YI CoName"} = qr/title"><h2>(.+?)\(/;
 
 
 
